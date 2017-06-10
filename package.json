@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/MattAndDev/mandalas-backend/issues"
   },
-  "homepage": "https://github.com/MattAndDev/mandalas-backend#readme"
+  "homepage": "https://github.com/MattAndDev/mandalas-backend#readme",
+  "dependencies": {
+    "app-module-path": "^2.2.0",
+    "express": "^4.15.3",
+    "lodash": "^4.17.4"
+  }
 }
