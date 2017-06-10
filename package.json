@@ -18,6 +18,8 @@
   "homepage": "https://github.com/MattAndDev/mandalas-backend#readme",
   "dependencies": {
     "app-module-path": "^2.2.0",
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.3",
     "express": "^4.15.3",
     "lodash": "^4.17.4"
   }
