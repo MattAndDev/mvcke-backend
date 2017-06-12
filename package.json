@@ -24,6 +24,8 @@
     "glob": "^7.1.2",
     "image-size": "^0.5.5",
     "lodash": "^4.17.4",
+    "pdfkit": "^0.8.2",
+    "svg-to-pdfkit": "^0.1.1",
     "zip-folder": "^1.0.0"
   }
 }
