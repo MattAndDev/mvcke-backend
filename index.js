@@ -46,7 +46,7 @@ class App {
   _addApiRoutes () {
 
     // save svg
-    this.router.route('/post/svg').post((req, res) => {
+    this.router.route('/save/svg').post((req, res) => {
       if (!fs.existsSync(`./data/${req.body.id}`)){
         fs.mkdirSync(`./data/${req.body.id}`);
       }
