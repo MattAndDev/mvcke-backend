@@ -42,6 +42,7 @@ module.exports = function (router) {
   //
   router.route('/track/get/combined/:id').get((req, res) => {
     res.header('Content-Type', 'application/zip')
+    let posterText = req.query.text ? req.query.text : 'inspiring text'
     if (fs.existsSync(`./data/${req.params.id}`)) {
       this.id = req.params.id
       // get files into array
@@ -54,14 +55,13 @@ module.exports = function (router) {
           doc.save()
           if (index === 5 ) {
             doc.scale(1.5)
-            doc.addSVG(file.raw, -100, 580, {
+            doc.addSVG(file.raw, -108, 580, {
               assumePt: false
             })
           }
           else {
             doc.scale(0.25)
             let increment = index >= 6 ? 2600 : 0
-            console.log(increment);
             doc.addSVG(file.raw, 1600,index * 600 * 1.5 + increment, {
               assumePt: false
             })
@@ -70,6 +70,7 @@ module.exports = function (router) {
           // doc.moveTo(0, index * 600)
           doc.restore()
         })
+        doc.fontSize(100).fillColor('#555555').text(posterText, 950, 1500, { align: 'center'})
         doc.end()
         res.send('Svg saved')
       })
