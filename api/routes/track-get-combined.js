@@ -13,7 +13,6 @@ PDFDocument.prototype.addSVG = function(svg, x, y, options) {
 
 module.exports = function (router) {
 
-
   // gets all svg in folder, callbacks an array of objects
   // {
   //  time: time in second of the saved svg (leading zeroes),
@@ -28,7 +27,9 @@ module.exports = function (router) {
           if (err)  return console.log(err)
           jsonFiles.push({
             time: identifier,
-            raw: data
+            raw: data,
+            location: file,
+            size: sizeOf(file)
           })
           if (index === files.length - 1 ) {
             cb(jsonFiles)
@@ -38,7 +39,7 @@ module.exports = function (router) {
     })
   }
 
-  // 
+  //
   router.route('/track/get/combined/:id').get((req, res) => {
     res.header('Content-Type', 'application/zip')
     if (fs.existsSync(`./data/${req.params.id}`)) {
@@ -47,9 +48,27 @@ module.exports = function (router) {
       svgsToArray((files) => {
         // setup moc pdf
         let doc = new PDFDocument({size: [2030,2900]}) // somewhat 70/100 cm
+        doc.scale(1).moveTo(0, 0).save('dad')
         doc.pipe(fs.createWriteStream(`./data/${this.id}/poster.pdf`))
         _.each(files, (file, index) => {
-          doc.addSVG(file.raw, 0,0, {assumePt: true});
+          doc.save()
+          if (index === 5 ) {
+            doc.scale(1.5)
+            doc.addSVG(file.raw, -100, 580, {
+              assumePt: false
+            })
+          }
+          else {
+            doc.scale(0.25)
+            let increment = index >= 6 ? 2600 : 0
+            console.log(increment);
+            doc.addSVG(file.raw, 1600,index * 600 * 1.5 + increment, {
+              assumePt: false
+            })
+          }
+          doc.moveTo(0,0)
+          // doc.moveTo(0, index * 600)
+          doc.restore()
         })
         doc.end()
         res.send('Svg saved')
