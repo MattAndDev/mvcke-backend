@@ -11,7 +11,11 @@ var path = require('path')
 var zip = require('zip-folder')
 var glob = require('glob')
 var sizeOf = require('image-size');
-
+var PDFDocument = require('pdfkit')
+var SVGtoPDF = require('svg-to-pdfkit')
+PDFDocument.prototype.addSVG = function(svg, x, y, options) {
+  return SVGtoPDF(this, svg, x, y, options), this;
+};
 // env
 var env
 try { env = require('.env') }
@@ -94,11 +98,27 @@ class App {
     this.router.route('/get/combined/:id').get((req, res) => {
       res.header('Content-Type', 'application/zip')
       if (fs.existsSync(`./data/${req.params.id}`)) {
-        glob(`./data/${req.params.id}/*.svg`, {nosort: true}, function (err, files) {
+        var doc = new PDFDocument()
+        doc.pipe(fs.createWriteStream(`./data/${req.params.id}/poster.pdf`))
+        this.files = []
+        glob(`./data/${req.params.id}/*.svg`, {nosort: true}, (err, files) => {
           _.each(files, (file, index) => {
-            if (index === 1) {
-              console.log(sizeOf(file));
-            }
+            let identifier = path.basename(file).replace('.svg','')
+            console.log(identifier);
+              fs.readFile(file, 'utf8',  (err,data) => {
+                if (err)  return console.log(err)
+                this.files.push({
+                  name: identifier,
+                  data: data
+                })
+                if (index === files.length - 1 ) {
+                  _.each(this.files, (file) => {
+                    doc.addSVG(file.data, 0,0);
+                  })
+                  doc.end()
+                  console.log('done');
+                }
+              });
           })
           res.send('Svg saved')
         })
