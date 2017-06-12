@@ -42,6 +42,8 @@ class App {
     this.app.use('/play/:id', Express.static('./frontend/dist'))
     // make zip folder publicly aailable for downloads
     this.app.use('/zips', Express.static('./zips'))
+    // make pdfs folder publicly aailable for downloads
+    this.app.use('/pdfs', Express.static('./pdfs'))
 
     // all the rest <- redirect home
     let swallowAll = (req, res) => {
