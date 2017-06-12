@@ -9,6 +9,7 @@ var bodyParser = require('body-parser')
 var fs = require('fs')
 var path = require('path')
 var zip = require('zip-folder')
+var glob = require('glob')
 // env
 var env
 try { env = require('.env') }
@@ -30,6 +31,7 @@ class App {
 
   init () {
     this.app.use(Express.static('./frontend/dist'))
+    this._addApiRoutes()
     this.app.use('/play/:id', Express.static('./frontend/dist'))
     this.app.use('/zips', Express.static('./zips'))
     this.app.use('/', Express.static('./frontend/dist'))
@@ -38,7 +40,6 @@ class App {
       res.redirect('/')
     }
 
-    this._addApiRoutes()
     this.app.use(swallowAll)
     this.app.listen(env.port)
   }
@@ -46,18 +47,18 @@ class App {
   _addApiRoutes () {
 
     // save svg
-    this.router.route('/save/svg').post((req, res) => {
-      if (!fs.existsSync(`./data/${req.body.id}`)){
-        fs.mkdirSync(`./data/${req.body.id}`);
+    this.router.route('/track/save/svg/:id').post((req, res) => {
+      if (!fs.existsSync(`./data/${req.params.id}`)){
+        fs.mkdirSync(`./data/${req.params.id}`);
       }
-      fs.writeFile(`./data/${req.body.id}/${req.body.time}.svg`, req.body.raw, function(err) {
+      fs.writeFile(`./data/${req.params.id}/${req.body.time}.svg`, req.body.raw, function(err) {
         console.log(err);
       });
       res.send('Svg saved')
     })
 
     // get zip
-    this.router.route('/get/zip/:id').get((req, res) => {
+    this.router.route('/track/get/zip/:id').get((req, res) => {
       res.header('Content-Type', 'application/zip')
       if (fs.existsSync(`./data/${req.params.id}`)) {
         zip(`./data/${req.params.id}`, `./zips/${req.params.id}.zip`, (err) => {
@@ -67,6 +68,31 @@ class App {
         })
       }
     })
+
+    // save svg
+    this.router.route('/create/id').post((req, res) => {
+      if (!fs.existsSync(`./data/${req.body.id}`)){
+        fs.mkdirSync(`./data/${req.body.id}`);
+      }
+      fs.writeFile(`./data/${req.body.id}/${req.body.time}.svg`, req.body.raw, function(err) {
+        console.log(err);
+      });
+      res.send('Svg saved')
+    })
+    // // get zip
+    // this.router.route('/get/combined/:id').get((req, res) => {
+    //   res.header('Content-Type', 'application/zip')
+    //   if (fs.existsSync(`./data/${req.params.id}`)) {
+    //     glob(`./data/${req.params.id}/*.svg`, function (err, files) {
+    //       _.each(files, (file, index) => {
+    //         if (index === 1) {
+    //           console.log(file);
+    //         }
+    //       })
+    //       res.send('Svg saved')
+    //     })
+    //   }
+    // })
   }
 
 
