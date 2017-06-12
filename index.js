@@ -70,14 +70,16 @@ class App {
     })
 
     // save svg
-    this.router.route('/create/id').post((req, res) => {
-      if (!fs.existsSync(`./data/${req.body.id}`)){
-        fs.mkdirSync(`./data/${req.body.id}`);
+    this.router.route('/track/register/:id').post((req, res) => {
+      if (!fs.existsSync(`./data/${req.params.id}`)){
+        fs.mkdirSync(`./data/${req.params.id}`);
       }
-      fs.writeFile(`./data/${req.body.id}/${req.body.time}.svg`, req.body.raw, function(err) {
+      fs.writeFile(`./data/${req.params.id}/track.json`, JSON.stringify(req.body), function(err) {
         console.log(err);
+        if (!err) {
+          res.send(`Registered track with id ${req.params.id}`)
+        }
       });
-      res.send('Svg saved')
     })
     // // get zip
     // this.router.route('/get/combined/:id').get((req, res) => {
