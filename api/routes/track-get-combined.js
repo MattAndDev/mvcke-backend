@@ -72,6 +72,8 @@ module.exports = function (router) {
         })
         doc.fontSize(100).fillColor('#555555').text(posterText, 950, 1500, { align: 'center'})
         doc.end()
+        fs.createReadStream(`./data/${this.id}/poster.pdf`).pipe(fs.createWriteStream(`./pdfs/${this.id}.pdf`));
+
         res.send('Svg saved')
       })
     }

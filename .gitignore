@@ -5,3 +5,5 @@ data/*
 !data/.gitkeep
 zips/*
 !zips/.gitkeep
+pdfs/*
+!pdfs/.gitkeep
