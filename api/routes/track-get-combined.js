@@ -1,7 +1,17 @@
+// core
 var fs = require('fs')
+var path = require('path')
+// libs
+var sizeOf = require('image-size');
+var PDFDocument = require('pdfkit')
+var glob = require('glob')
+var _ = require('lodash')
+var SVGtoPDF = require('svg-to-pdfkit')
+PDFDocument.prototype.addSVG = function(svg, x, y, options) {
+  return SVGtoPDF(this, svg, x, y, options), this;
+};
 
 module.exports = function (router) {
-
     // // get zip
     router.route('/track/get/combined/:id').get((req, res) => {
       res.header('Content-Type', 'application/zip')
