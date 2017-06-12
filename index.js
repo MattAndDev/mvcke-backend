@@ -10,6 +10,8 @@ var fs = require('fs')
 var path = require('path')
 var zip = require('zip-folder')
 var glob = require('glob')
+var sizeOf = require('image-size');
+
 // env
 var env
 try { env = require('.env') }
@@ -44,6 +46,12 @@ class App {
     this.app.listen(env.port)
   }
 
+  _ceateFilename (int) {
+    if (typeof int !== 'string') int = int.toString()
+    while (int.length < 10) int = '0' + int
+    return int
+  }
+
   _addApiRoutes () {
 
     // save svg
@@ -51,7 +59,8 @@ class App {
       if (!fs.existsSync(`./data/${req.params.id}`)){
         fs.mkdirSync(`./data/${req.params.id}`);
       }
-      fs.writeFile(`./data/${req.params.id}/${req.body.time}.svg`, req.body.raw, function(err) {
+      let fileName = this._ceateFilename(req.body.time)
+      fs.writeFile(`./data/${req.params.id}/${fileName}.svg`, req.body.raw, function(err) {
         console.log(err);
       });
       res.send('Svg saved')
@@ -82,19 +91,19 @@ class App {
       });
     })
     // // get zip
-    // this.router.route('/get/combined/:id').get((req, res) => {
-    //   res.header('Content-Type', 'application/zip')
-    //   if (fs.existsSync(`./data/${req.params.id}`)) {
-    //     glob(`./data/${req.params.id}/*.svg`, function (err, files) {
-    //       _.each(files, (file, index) => {
-    //         if (index === 1) {
-    //           console.log(file);
-    //         }
-    //       })
-    //       res.send('Svg saved')
-    //     })
-    //   }
-    // })
+    this.router.route('/get/combined/:id').get((req, res) => {
+      res.header('Content-Type', 'application/zip')
+      if (fs.existsSync(`./data/${req.params.id}`)) {
+        glob(`./data/${req.params.id}/*.svg`, {nosort: true}, function (err, files) {
+          _.each(files, (file, index) => {
+            if (index === 1) {
+              console.log(sizeOf(file));
+            }
+          })
+          res.send('Svg saved')
+        })
+      }
+    })
   }
 
 
