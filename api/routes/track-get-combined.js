@@ -1,5 +1,5 @@
 // core
-var fs = require('fs')
+var fs = require('fs-extra')
 var path = require('path')
 // libs
 var sizeOf = require('image-size');
@@ -50,7 +50,8 @@ module.exports = function (router) {
         // setup moc pdf
         let doc = new PDFDocument({size: [2030,2900]}) // somewhat 70/100 cm
         doc.scale(1).moveTo(0, 0).save('dad')
-        doc.pipe(fs.createWriteStream(`./data/${this.id}/poster.pdf`))
+        let docstream = fs.createWriteStream(`./data/${this.id}/poster.pdf`)
+        doc.pipe(docstream)
         _.each(files, (file, index) => {
           doc.save()
           if (index === 5 ) {
@@ -72,9 +73,13 @@ module.exports = function (router) {
         })
         doc.fontSize(100).fillColor('#555555').text(posterText, 950, 1500, { align: 'center'})
         doc.end()
-        fs.createReadStream(`./data/${this.id}/poster.pdf`).pipe(fs.createWriteStream(`./pdfs/${this.id}.pdf`));
+        docstream.on('finish', () => {
+          fs.copy(`./data/${this.id}/poster.pdf`, `./pdfs/${this.id}.pdf`)
+          .then(() => {
+            res.send('Svg saved')
+          })
+        })
 
-        res.send('Svg saved')
       })
     }
   })
