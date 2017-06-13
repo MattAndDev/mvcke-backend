@@ -56,8 +56,8 @@ module.exports = function (router) {
           doc.save()
           if (index === 5 ) {
             doc.scale(1.5)
-            doc.addSVG(file.raw, -108, 580, {
-              assumePt: false
+            doc.addSVG(file.raw, -52, 660, {
+              assumePt: true
             })
           }
           else {
@@ -71,7 +71,7 @@ module.exports = function (router) {
           // doc.moveTo(0, index * 600)
           doc.restore()
         })
-        doc.fontSize(100).fillColor('#555555').text(posterText, 950, 1500, { align: 'center'})
+        doc.fontSize(100).fillColor('#555555').text(posterText, 930, 1464, { align: 'center'})
         doc.end()
         docstream.on('finish', () => {
           fs.copy(`./data/${this.id}/poster.pdf`, `./pdfs/${this.id}.pdf`)
