@@ -76,7 +76,7 @@ module.exports = function (router) {
         docstream.on('finish', () => {
           fs.copy(`./data/${this.id}/poster.pdf`, `./pdfs/${this.id}.pdf`)
           .then(() => {
-            res.send('Svg saved')
+            res.send(req.protocol + '://' + req.get('host') + `/pdfs/${req.params.id}.pdf`)
           })
         })
 
