@@ -5,7 +5,7 @@ require('app-module-path').addPath(__dirname)
 var Express = require('express')
 var cors = require('cors')
 var bodyParser = require('body-parser')
-var SocketsIo = require('socket.io')
+var Socket = require('./socket')
 // api
 var Api = require('./api')
 // env
@@ -18,9 +18,12 @@ catch (ex) { env = require('.env.example') }
 class App {
 
   constructor () {
+    // setup app
     this.app = require('express')()
+    // setup server and pass express app -> to make sockets work
     this.server = require('http').Server(this.app);
-    this.sockets = new SocketsIo(this.server)
+    // dock sockets
+    this.socket = new Socket(this.server)
     // init express stuff
     this.router = Express.Router()
     // setup sockets :tada:
@@ -40,7 +43,7 @@ class App {
     // first entry point pass static
     this.app.use(Express.static('./frontend/dist'))
     // add api routes
-    Api.addRoutes(this.router)
+    Api.addRoutes(this.router, this.socket)
     // CUSTOM ROUTES
     // pass directly song id to vue see /js/vue/play.vue
     this.app.use('/play/:id', Express.static('./frontend/dist'))
@@ -55,7 +58,7 @@ class App {
     }
     this.app.use(swallowAll)
     // listening
-    this.app.listen(env.port)
+    this.server.listen(env.port)
   }
 
 }
