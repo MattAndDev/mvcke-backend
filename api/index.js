@@ -5,11 +5,11 @@ var path = require('path')
 var glob = require('glob')
 
 class Api {
-  addRoutes (router) {
+  addRoutes (router, socket) {
     // ah snap!
     glob('./api/routes/*.js', (err, routes) => {
      _.each(routes, (route) => {
-       require(path.resolve(route))(router)
+       require(path.resolve(route))(router, socket)
      })
     })
   }

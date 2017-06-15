@@ -5,12 +5,11 @@ var sharp = require('sharp')
 var svg2png = require('svg2png')
 var _ = require('lodash')
 
-module.exports = function (router) {
+module.exports = function (router, socket) {
 
   var thumbs = [
     100, 200, 400, 600
   ]
-
   var fileName, id
 
   router.route('/track/save/svg/:id').post((req, res) => {
@@ -60,7 +59,13 @@ module.exports = function (router) {
         if (!fs.existsSync(`./data/${id}/thumbs`)) fs.mkdirSync(`./data/${id}/thumbs`)
         svg2png(data).then( (buffer) => {
           fs.writeFile(`./data/${id}/thumbs/${fileName}.png`, buffer, (err) => {
-            err ? reject(err) : resolve(`./data/${id}/thumbs/${fileName}.png`)
+            if (err) {
+              reject(err)
+            }
+            else {
+              socket.emit('svgToPng', { fileName: fileName })
+              resolve(`./data/${id}/thumbs/${fileName}.png`)
+            }
           })
         })
       })

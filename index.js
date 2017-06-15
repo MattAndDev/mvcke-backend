@@ -42,7 +42,7 @@ class App {
   init () {
     // first entry point pass static
     this.app.use(Express.static('./frontend/dist'))
-    // add api routes
+    // add api routes, pass socket
     Api.addRoutes(this.router, this.socket)
     // CUSTOM ROUTES
     // pass directly song id to vue see /js/vue/play.vue
