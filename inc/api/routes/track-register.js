@@ -8,7 +8,6 @@ catch (ex) { env = require('.env.example') }
 module.exports = function (router) {
   // register track
   router.route('/track/register/:id').post((req, res) => {
-    console.log(`${env.rawPath}/${req.params.id}`);
     if (!fs.existsSync(`${env.rawPath}/${req.params.id}`)){
       fs.mkdirSync(`${env.rawPath}/${req.params.id}`);
     }
