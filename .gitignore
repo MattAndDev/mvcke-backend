@@ -1,9 +1,9 @@
 node_modules/
 .env.json
 .DS_Store
-data/*
-!data/.gitkeep
-zips/*
-!zips/.gitkeep
-pdfs/*
-!pdfs/.gitkeep
+data/pdfs/*
+!data/pdfs/.gitkeep
+data/raw/*
+!data/raw/.gitkeep
+data/zips/*
+!data/zips/.gitkeep
