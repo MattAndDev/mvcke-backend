@@ -5,6 +5,7 @@ require('app-module-path').addPath(__dirname)
 var Express = require('express')
 var cors = require('cors')
 var bodyParser = require('body-parser')
+var SocketsIo = require('socket.io')
 // api
 var Api = require('./api')
 // env
@@ -17,9 +18,12 @@ catch (ex) { env = require('.env.example') }
 class App {
 
   constructor () {
+    this.app = require('express')()
+    this.server = require('http').Server(this.app);
+    this.sockets = new SocketsIo(this.server)
     // init express stuff
-    this.app = new Express()
     this.router = Express.Router()
+    // setup sockets :tada:
     // cors (!) this should be remove in prod
     this.app.use(cors())
     // we love json
