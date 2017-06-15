@@ -27,7 +27,6 @@ module.exports = function (router, socket) {
     if (!fs.existsSync(thumbPath)) fs.mkdirSync(thumbPath)
     fs.writeFile(`${path}/${fileName}.png`, req.file.buffer, (err) => {
       if (!err) {
-        console.log(`${path}/${fileName}.png`);
         _saveThumbsFromPng(`${path}/${fileName}.png`).then(() => {
           return res.send('png saved')
         })
