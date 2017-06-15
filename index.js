@@ -5,9 +5,9 @@ require('app-module-path').addPath(__dirname)
 var Express = require('express')
 var cors = require('cors')
 var bodyParser = require('body-parser')
-var Socket = require('./socket')
+var Socket = require('./inc/socket')
 // api
-var Api = require('./api')
+var Api = require('./inc/api')
 // env
 var env
 try { env = require('.env') }
@@ -48,9 +48,9 @@ class App {
     // pass directly song id to vue see /js/vue/play.vue
     this.app.use('/play/:id', Express.static('./frontend/dist'))
     // make zip folder publicly aailable for downloads
-    this.app.use('/zips', Express.static('./zips'))
+    this.app.use('/zips', Express.static(env.zipPath))
     // make pdfs folder publicly aailable for downloads
-    this.app.use('/pdfs', Express.static('./pdfs'))
+    this.app.use('/pdfs', Express.static(env.pdfsPath))
 
     // all the rest <- redirect home
     let swallowAll = (req, res) => {
