@@ -23,7 +23,7 @@ class App {
     // cors (!) this should be remove in prod
     this.app.use(cors())
     // we love json
-    this.app.use(bodyParser.json())
+    this.app.use(bodyParser.json({limit: '50mb'}))
     // set api endpoint for this router
     // NOTE: this because the rest
     // is static and handled by vue.js
