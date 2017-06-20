@@ -52,7 +52,7 @@ module.exports = function (router) {
   }
 
   let setSvgSize = (mm) => {
-    let standardWidth = 317.5
+    let standardWidth = 1200
     let scale = mmToPoints(mm) / standardWidth
     this.reverseScale = standardWidth / mmToPoints(mm)
     this.scale = scale
@@ -91,7 +91,6 @@ module.exports = function (router) {
             doc.addSVG(file.raw, 1200, index * mmToPointsFixScale(100), {
               assumePt: true
             })
-            doc.scale(10000)
           // }
           doc.moveTo(0,0)
           doc.restore()
