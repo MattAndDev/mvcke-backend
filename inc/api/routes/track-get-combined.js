@@ -89,7 +89,9 @@ module.exports = function (router) {
           doc.save()
           // big element at index, could be randomized
           if (index === 5  ) {
-            doc.moveTo(mm2pt(200), index * mm2pt(100) + mm2pt(50)).lineTo(mm2pt(100), index * mm2pt(100)+ mm2pt(50)).stroke()
+            doc.moveTo(mm2pt(90), index * mm2pt(100) + mm2pt(50)).lineTo(mm2pt(200), index * mm2pt(100)+ mm2pt(50)).strokeColor('#555555').strokeOpacity(0.2).stroke()
+            doc.moveTo(0, 0).fontSize(10).fillColor('#555555').text(file.time, mm2pt(0), index * mm2pt(100)+ mm2pt(47.15),
+            { align: 'right', width: mm2pt(88)})
             // set the size
             doc.scale(setSvgSize(300, file.size.width))
             // position and add
@@ -97,7 +99,9 @@ module.exports = function (router) {
           }
           else {
             let increment = index >= 6 ? mm2pt(50) : 0
-            doc.moveTo(mm2pt(200), index * mm2pt(100) + mm2pt(25)+ increment).lineTo(mm2pt(300), index * mm2pt(100)+ mm2pt(25) + increment).stroke()
+            doc.moveTo(mm2pt(200), index * mm2pt(100) + mm2pt(25)+ increment).lineTo(mm2pt(250), index * mm2pt(100)+ mm2pt(25) + increment).strokeColor('#555555').strokeOpacity(0.2).stroke()
+            doc.moveTo(0, 0).fontSize(10).fillColor('#555555').text(file.time, mm2pt(252), index * mm2pt(100)+ mm2pt(22.15) + increment,
+            { align: 'left', width: mm2pt(88), height: mm2pt(10)})
             // set the size
             doc.scale(setSvgSize(50, file.size.width))
             // set exception to leave space for big element
