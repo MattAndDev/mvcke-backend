@@ -79,19 +79,19 @@ module.exports = function (router) {
         _.each(files, (file, index) => {
           doc.moveTo(0,0)
           doc.save()
-          // if (index === 5 ) {
-          //   // doc.scale(1.5)
-          //   doc.addSVG(file.raw, -108, 580, {
-          //     assumePt: false
-          //   })
-          // }
-          // else {
+          if (index === 4 ) {
+            doc.scale(setSvgSize(400))
+            doc.addSVG(file.raw, 1200 -  mmToPointsFixScale(400) , index * mmToPointsFixScale(100) - mmToPointsFixScale(100), {
+              assumePt: false
+            })
+          }
+          else {
             doc.scale(setSvgSize(100))
             let increment = index >= 6 ? 2600 : 0
             doc.addSVG(file.raw, 1200, index * mmToPointsFixScale(100), {
               assumePt: true
             })
-          // }
+          }
           doc.moveTo(0,0)
           doc.restore()
         })
