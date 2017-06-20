@@ -89,16 +89,19 @@ module.exports = function (router) {
           doc.save()
           // big element at index, could be randomized
           if (index === 5  ) {
+            doc.moveTo(mm2pt(200), index * mm2pt(100) + mm2pt(50)).lineTo(mm2pt(100), index * mm2pt(100)+ mm2pt(50)).stroke()
             // set the size
             doc.scale(setSvgSize(300, file.size.width))
             // position and add
             doc.addSVG(file.raw, mm2pt(50, true) , index * mm2pt(100, true) - (mm2pt(100, true)) , { assumePt: true })
           }
           else {
+            let increment = index >= 6 ? mm2pt(50) : 0
+            doc.moveTo(mm2pt(200), index * mm2pt(100) + mm2pt(25)+ increment).lineTo(mm2pt(300), index * mm2pt(100)+ mm2pt(25) + increment).stroke()
             // set the size
             doc.scale(setSvgSize(50, file.size.width))
             // set exception to leave space for big element
-            let increment = index >= 6 ? mm2pt(50, true) : 0
+            increment = index >= 6 ? mm2pt(50, true) : 0
             // position and add
             doc.addSVG(file.raw, mm2pt(175, true), index * mm2pt(100, true) + increment , {
               assumePt: true
@@ -113,6 +116,9 @@ module.exports = function (router) {
         if (posterText.length > maxTextLenght) posterText = posterText.substring(0, maxTextLenght)
         doc.fontSize(80).fillColor('#555555').text(posterText.toLowerCase(), mm2pt(350), mm2pt(524),
         { align: 'center', width: mm2pt(280)})
+
+
+
         // wuut
         doc.end()
         // once save)
