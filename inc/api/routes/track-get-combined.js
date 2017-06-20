@@ -80,7 +80,7 @@ module.exports = function (router) {
       svgsToArray((files) => {
         // setup poster (70*100)
         let doc = new PDFDocument({size: [mm2pt(700),mm2pt(1000)]})
-        // doc.font('fonts/PalatinoBold.ttf')
+        doc.font(path.resolve('inc/fonts/Titillium/TitilliumWeb-Light.ttf'))
         let docstream = fs.createWriteStream(`${env.rawPath}/${this.id}/poster.pdf`)
         doc.pipe(docstream)
         doc.moveTo(0,0) // this is acutally default, as reference
@@ -107,10 +107,15 @@ module.exports = function (router) {
           // go back to 0,0
           doc.restore()
         })
-        doc.fontSize(100).fillColor('#555555').text(posterText, 950, 1500, { align: 'center'})
+
+        // truncate if text is too long
+        let maxTextLenght = 17
+        if (posterText.length > maxTextLenght) posterText = posterText.substring(0, maxTextLenght)
+        doc.fontSize(80).fillColor('#555555').text(posterText.toLowerCase(), mm2pt(350), mm2pt(524),
+        { align: 'center', width: mm2pt(280)})
         // wuut
         doc.end()
-        // once save
+        // once save)
         docstream.on('finish', () => {
           // copy over to poster directory
           fs.copy(`${env.rawPath}/${this.id}/poster.pdf`, `${env.pdfsPath}/${this.id}.pdf`)
