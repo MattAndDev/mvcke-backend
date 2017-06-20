@@ -43,6 +43,25 @@ module.exports = function (router) {
     })
   }
 
+
+  let mmToPoints = (mm) => {
+    return mm * 2.83465
+  }
+  let pointsToMm = (points) => {
+    return points * 0.352778
+  }
+
+  let setSvgSize = (mm) => {
+    let standardWidth = 317.5
+    let scale = mmToPoints(mm) / standardWidth
+    this.reverseScale = standardWidth / mmToPoints(mm)
+    this.scale = scale
+    return scale
+  }
+  let mmToPointsFixScale = (mm) => {
+    return mm * 2.83465 * this.reverseScale
+  }
+
   //
   router.route('/track/get/combined/:id').get((req, res) => {
     res.header('Content-Type', 'application/zip')
@@ -52,27 +71,29 @@ module.exports = function (router) {
       // get files into array
       svgsToArray((files) => {
         // setup moc pdf
-        let doc = new PDFDocument({size: [2030,2900]}) // somewhat 70/100 cm
+        let doc = new PDFDocument({size: [mmToPoints(700),mmToPoints(1000)]})
+        // doc.font('fonts/PalatinoBold.ttf')
         doc.scale(1).moveTo(0, 0).save('dad')
         let docstream = fs.createWriteStream(`${env.rawPath}/${this.id}/poster.pdf`)
         doc.pipe(docstream)
         _.each(files, (file, index) => {
-          doc.save()
-          if (index === 5 ) {
-            doc.scale(1.5)
-            doc.addSVG(file.raw, -108, 580, {
-              assumePt: false
-            })
-          }
-          else {
-            doc.scale(0.25)
-            let increment = index >= 6 ? 2600 : 0
-            doc.addSVG(file.raw, 1600,index * 600 * 1.5 + increment, {
-              assumePt: false
-            })
-          }
           doc.moveTo(0,0)
-          // doc.moveTo(0, index * 600)
+          doc.save()
+          // if (index === 5 ) {
+          //   // doc.scale(1.5)
+          //   doc.addSVG(file.raw, -108, 580, {
+          //     assumePt: false
+          //   })
+          // }
+          // else {
+            doc.scale(setSvgSize(100))
+            let increment = index >= 6 ? 2600 : 0
+            doc.addSVG(file.raw, 1200, index * mmToPointsFixScale(100), {
+              assumePt: true
+            })
+            doc.scale(10000)
+          // }
+          doc.moveTo(0,0)
           doc.restore()
         })
         doc.fontSize(100).fillColor('#555555').text(posterText, 950, 1500, { align: 'center'})
