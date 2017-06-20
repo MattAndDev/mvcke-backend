@@ -43,7 +43,7 @@ module.exports = function (router) {
             time: time,
             raw: data,
             location: file, // not used
-            size: sizeOf(file) // not used
+            size: sizeOf(file)
           })
           // done
           if (index === files.length - 1 ) {
@@ -56,26 +56,17 @@ module.exports = function (router) {
   }
 
   // converts Mm to points
-  let mm2pt = (mm) => {
-    return mm * 2.83465
+  let mm2pt = (mm, isDocScaled) => {
+    let pt = isDocScaled ? mm * 2.83465 * this.reverseScale : mm * 2.83465
+    return pt
   }
 
-  // sets svg size in mm
-  let setSvgSize = (mm) => {
-    let standardWidth = 1200
-    let scale = mm2pt(mm) / standardWidth
-    this.reverseScale = standardWidth / mm2pt(mm)
+  // scales the svg from given px to mm
+  let setSvgSize = (mm, px) => {
+    let scale = mm2pt(mm) / px
+    this.reverseScale = px / mm2pt(mm)
     this.scale = scale
     return scale
-  }
-
-  // workaround
-  // NOTE: we use scale to get the appropriate si ze in mm of the svg
-  // when the svg is added (svg-to-pdfkit) the context is still scaled
-  // and can't be restored
-  // so we need to reverse the scale
-  let mm2ptWhileScaled = (mm) => {
-    return mm * 2.83465 * this.reverseScale
   }
 
   router.route('/track/get/combined/:id').get((req, res) => {
@@ -99,17 +90,17 @@ module.exports = function (router) {
           // big element at index, could be randomized
           if (index === 5  ) {
             // set the size
-            doc.scale(setSvgSize(300))
+            doc.scale(setSvgSize(300, file.size.width))
             // position and add
-            doc.addSVG(file.raw, mm2ptWhileScaled(50) , index * mm2ptWhileScaled(100) - (mm2ptWhileScaled(100)) , { assumePt: true })
+            doc.addSVG(file.raw, mm2pt(50, true) , index * mm2pt(100, true) - (mm2pt(100, true)) , { assumePt: true })
           }
           else {
             // set the size
-            doc.scale(setSvgSize(50))
+            doc.scale(setSvgSize(50, file.size.width))
             // set exception to leave space for big element
-            let increment = index >= 6 ? mm2ptWhileScaled(50) : 0
+            let increment = index >= 6 ? mm2pt(50, true) : 0
             // position and add
-            doc.addSVG(file.raw, mm2ptWhileScaled(175), index * mm2ptWhileScaled(100) + increment , {
+            doc.addSVG(file.raw, mm2pt(175, true), index * mm2pt(100, true) + increment , {
               assumePt: true
             })
           }
